@@ -83,7 +83,14 @@ public class JavaAlgorithms {
      * но приветствуется попытка решить её самостоятельно.
      */
     static public int josephTask(int menNumber, int choiceInterval) {
-        throw new NotImplementedError();
+        try {
+            int s = 0;
+            for (int i = 1; i <= menNumber; i++)
+                s = (s + choiceInterval) % i;
+            return s + 1;
+        } catch (Exception e) {
+            throw new NotImplementedError();
+        }
     }
 
     /**
@@ -112,6 +119,22 @@ public class JavaAlgorithms {
      * Единица простым числом не считается.
      */
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        if (limit <= 1)
+            return 0;
+        int k = 0;
+        for (int i = 2; i <= limit ; i++) {
+            if (isPrime(i))
+                k++;
+        }
+        return k;
+    }
+
+    static boolean isPrime(int j) {
+        if (j == 2) return true;
+        if (j % 2 == 0) return false;
+        for (int m = 3; m <= Math.sqrt(j); m += 2) {
+            if (j % m == 0) return false;
+        }
+        return true;
     }
 }

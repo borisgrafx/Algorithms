@@ -1,7 +1,9 @@
 package lesson2
 
+import org.junit.jupiter.api.Assertions
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.test.assertEquals
 
@@ -43,6 +45,13 @@ abstract class AbstractAlgorithmsTests {
     }
 
     fun optimizeBuyAndSell(optimizeBuyAndSell: (String) -> Pair<Int, Int>) {
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            optimizeBuyAndSell("input/buysell_in4.txt")
+        }
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            optimizeBuyAndSell("input/buysell_in5.txt")
+        }
+
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in1.txt"))
         assertEquals(8 to 12, optimizeBuyAndSell("input/buysell_in2.txt"))
         assertEquals(3 to 4, optimizeBuyAndSell("input/buysell_in3.txt"))
@@ -61,6 +70,12 @@ abstract class AbstractAlgorithmsTests {
     }
 
     fun josephTask(josephTask: (Int, Int) -> Int) {
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            josephTask(0, 5)
+        }
+        Assertions.assertThrows(IllegalArgumentException::class.java) {
+            josephTask(100, 0)
+        }
         assertEquals(1, josephTask(1, 1))
         assertEquals(2, josephTask(2, 1))
         assertEquals(50000000, josephTask(50000000, 1))
@@ -75,6 +90,8 @@ abstract class AbstractAlgorithmsTests {
 
     fun longestCommonSubstring(longestCommonSubstring: (String, String) -> String) {
         assertEquals("", longestCommonSubstring("мой мир", "я"))
+        assertEquals("", longestCommonSubstring("", ""))
+        assertEquals("дово", longestCommonSubstring("довоД", "Доводоводов"))
         assertEquals("зд", longestCommonSubstring("здравствуй мир", "мы здесь"))
         assertEquals("СЕРВАТОР", longestCommonSubstring("ОБСЕРВАТОРИЯ", "КОНСЕРВАТОРЫ"))
         assertEquals(
@@ -144,5 +161,6 @@ abstract class AbstractAlgorithmsTests {
         assertEquals(148933, calcPrimesNumber(2000000))
         assertEquals(348513, calcPrimesNumber(5000000))
         assertEquals(664579, calcPrimesNumber(10000000))
+        assertEquals(1565927, calcPrimesNumber(25000000))
     }
 }

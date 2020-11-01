@@ -1,10 +1,14 @@
 package lesson1
 
+import org.junit.Assert.assertEquals
+import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertArrayEquals
+import org.junit.jupiter.api.assertThrows
 import util.PerfResult
 import util.estimate
 import java.io.BufferedWriter
 import java.io.File
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.math.abs
 import kotlin.system.measureNanoTime
@@ -42,6 +46,32 @@ abstract class AbstractTaskTests : AbstractFileTests() {
         try {
             sortTimes("input/time_in3.txt", "temp.txt")
             assertFileContent("temp.txt", File("input/time_out3.txt").readLines())
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        //Мои тесты
+        //Неверный ввод времени (11{00}00 AM)
+        try {
+            Assertions.assertThrows(IllegalArgumentException::class.java) {
+                sortTimes("input/time_in4.txt", "temp.txt")
+            }
+        } finally {
+            File("temp.txt").delete()
+        }
+        //Неверный ввод времени (00:00:00 AM, 00:00:00 PM, 00:00:01 AM)
+        try {
+            Assertions.assertThrows(IllegalArgumentException::class.java) {
+                sortTimes("input/time_in5.txt", "temp.txt")
+            }
+        } finally {
+            File("temp.txt").delete()
+        }
+        //Пустой файл
+        try {
+            Assertions.assertThrows(IllegalArgumentException::class.java) {
+                sortTimes("input/time_in6.txt", "temp.txt")
+            }
         } finally {
             File("temp.txt").delete()
         }
@@ -115,6 +145,24 @@ abstract class AbstractTaskTests : AbstractFileTests() {
                     121.3
                 """.trimIndent()
             )
+        } finally {
+            File("temp.txt").delete()
+        }
+
+        //Мои тесты
+        //Температура вне диапазона
+        try {
+            Assertions.assertThrows(NumberFormatException::class.java) {
+                sortTemperatures("input/temp_in2.txt", "temp.txt")
+            }
+        } finally {
+            File("temp.txt").delete()
+        }
+        //Пустой файл
+        try {
+            Assertions.assertThrows(NumberFormatException::class.java) {
+                sortTemperatures("input/temp_in3.txt", "temp.txt")
+            }
         } finally {
             File("temp.txt").delete()
         }

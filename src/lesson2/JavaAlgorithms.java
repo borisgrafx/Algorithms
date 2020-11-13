@@ -35,13 +35,13 @@ public class JavaAlgorithms {
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    // Трудоёмкость ~O(N^2)
-    // Ресурсоёмкость ~O(1)
+    // Трудоёмкость ~O(N)
+    // Ресурсоёмкость ~O(N)
     static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) throws FileNotFoundException {
         File input = new File(inputName);
-        Scanner scanner  = new Scanner(input);
+        Scanner scanner = new Scanner(input);
         List<Integer> prices = new ArrayList<>();
-        while(scanner.hasNextLine()) {
+        while (scanner.hasNextLine()) {
             int tmp = Integer.parseInt(scanner.nextLine());
             if (tmp < 0)
                 throw new IllegalArgumentException();
@@ -50,16 +50,15 @@ public class JavaAlgorithms {
         if (prices.size() < 2)
             throw new IllegalArgumentException();
         int max = 0;
+        int minPrice = 0;
         Pair<Integer, Integer> maxPair = new Pair<>(0, 0);
         for (int i = 0; i < prices.size(); i++) {
-            for (int j = i+1; j < prices.size(); j++) {
-                if (prices.get(j) - prices.get(i) > max) {
-                    maxPair = new Pair<>(i + 1, j + 1);
-                    max = prices.get(j) - prices.get(i);
-                }
-            }
+            if (prices.get(i) < prices.get(minPrice))
+                minPrice = i;
+            if(prices.get(i) - prices.get(minPrice) > prices.get(maxPair.getSecond()) - prices.get(maxPair.getFirst()))
+                maxPair = new Pair<>(minPrice, i);
         }
-        return maxPair;
+        return new Pair<>(maxPair.getFirst() + 1, maxPair.getSecond() + 1);
     }
 
     /**
@@ -116,10 +115,10 @@ public class JavaAlgorithms {
     static public int josephTask(int menNumber, int choiceInterval) {
         if (menNumber < 1 || choiceInterval < 1)
             throw new IllegalArgumentException();
-            int s = 0;
-            for (int i = 1; i <= menNumber; i++)
-                s = (s + choiceInterval) % i;
-            return s + 1;
+        int s = 0;
+        for (int i = 1; i <= menNumber; i++)
+            s = (s + choiceInterval) % i;
+        return s + 1;
     }
 
     /**
@@ -133,22 +132,32 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
-    // Трудоёмкость ~O(N^2)
-    // Ресурсоёмкость ~O(1)
+    //Сложность алгоритма ~O(MN), M и N - длина первой и второй строки
+    //Доработанный алгоритм с http://wp.wiki-wiki.ru/wp/index.php/Наибольшая_общая_подстрока
     static public String longestCommonSubstring(String firs, String second) {
-        String max = "";
-        for (int i = 0; i < firs.length(); i++)
+        if (firs.equals(second))
+            return firs;
+        else if ((firs.length() == 0 || second.length() == 0) || (firs.length() == 1 && second.length() == 1))
+            return "";
+        int[][] square = new int[firs.length()][second.length()];
+        int max = 0;
+        int end = 0;
+        for (int i = 0; i < firs.length(); i++) {
             for (int j = 0; j < second.length(); j++) {
-                int k = 0;
-                try {
-                    while (firs.charAt(i + k) == second.charAt(j + k))
-                        k++;
-                } catch (IndexOutOfBoundsException ignored) {
+                if (firs.charAt(i) == second.charAt(j)) {
+                    if (i != 0 && j != 0) {
+                        square[i][j] = square[i - 1][j - 1] + 1;
+                    } else {
+                        square[i][j] = 1;
+                    }
+                    if (square[i][j] > max) {
+                        max = square[i][j];
+                        end = i + 1;
+                    }
                 }
-                if (k > max.length())
-                    max = firs.substring(i, i + k);
             }
-        return max;
+        }
+        return firs.substring(end - max, end);
     }
 
     /**
@@ -161,8 +170,7 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
-    // Трудоёмкость ~O(N)
-    // Ресурсоёмкость ~O(1)
+    //Сложность алгоритма ~O(N^2)
     static public int calcPrimesNumber(int limit) {
         if (limit <= 1)
             return 0;

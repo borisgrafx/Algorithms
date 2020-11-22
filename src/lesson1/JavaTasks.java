@@ -3,10 +3,8 @@ package lesson1;
 import kotlin.NotImplementedError;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -195,7 +193,7 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) throws Exception {
-        // Трудоёмкость в наихудшем случае ~T(N-1) + O(N), в наилучшем ~2T(N/2) + O(N)
+        // Трудоёмкость O(N * logN + 3N) - Средняя т/ёмкость quickSort + считывание списка из файла + 2 цикла по элементам списка
         // Ресурсоёмкость O(N)
         File input = new File(inputName);
         Scanner scanner = new Scanner(input);

@@ -1,6 +1,5 @@
 package lesson5;
 
-import kotlin.NotImplementedError;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractSet;
@@ -8,6 +7,8 @@ import java.util.Iterator;
 import java.util.Set;
 
 public class OpenAddressingSet<T> extends AbstractSet<T> {
+
+    private final Object empty = new Object();
 
     private final int bits;
 
@@ -54,10 +55,10 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
 
     /**
      * Добавление элемента в таблицу.
-     *
+     * <p>
      * Не делает ничего и возвращает false, если такой же элемент уже есть в таблице.
      * В противном случае вставляет элемент в таблицу и возвращает true.
-     *
+     * <p>
      * Бросает исключение (IllegalStateException) в случае переполнения таблицы.
      * Обычно Set не предполагает ограничения на размер и подобных контрактов,
      * но в данном случае это было введено для упрощения кода.
@@ -67,7 +68,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
         int startingIndex = startingIndex(t);
         int index = startingIndex;
         Object current = storage[index];
-        while (current != null) {
+        while (current != null && current != empty) {
             if (current.equals(t)) {
                 return false;
             }
@@ -84,34 +85,87 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
 
     /**
      * Удаление элемента из таблицы
-     *
+     * <p>
      * Если элемент есть в таблица, функция удаляет его из дерева и возвращает true.
      * В ином случае функция оставляет множество нетронутым и возвращает false.
      * Высота дерева не должна увеличиться в результате удаления.
-     *
+     * <p>
      * Спецификация: {@link Set#remove(Object)} (Ctrl+Click по remove)
-     *
+     * <p>
      * Средняя
      */
+    //Трудоёмкость O(N)
+    //Ресурсоёмкость O(1)
     @Override
     public boolean remove(Object o) {
-        return super.remove(o);
+        if (!contains(o))
+            return false;
+        for (int i = startingIndex(o); i < storage.length; i++) {
+            Object current = storage[i];
+            if (current != null && current.equals(o)) {
+                storage[i] = empty;
+                size--;
+                break;
+            }
+        }
+        return true;
     }
 
     /**
      * Создание итератора для обхода таблицы
-     *
+     * <p>
      * Не забываем, что итератор должен поддерживать функции next(), hasNext(),
      * и опционально функцию remove()
-     *
+     * <p>
      * Спецификация: {@link Iterator} (Ctrl+Click по Iterator)
-     *
+     * <p>
      * Средняя (сложная, если поддержан и remove тоже)
      */
     @NotNull
     @Override
     public Iterator<T> iterator() {
-        // TODO
-        throw new NotImplementedError();
+        return new tableIterator();
+    }
+
+    public class tableIterator implements Iterator<T> {
+        int index = 0;
+        int step = 0;
+        Object cur;
+
+
+        //Трудоёмкость O(1)
+        //Ресурсоёмкость O(1)
+        @Override
+        public boolean hasNext() {
+            return step < size;
+        }
+
+        //Трудоёмкость O(N)
+        //Ресурсоёмкость O(1)
+        @Override
+        public T next() {
+            if (!hasNext())
+                throw new IllegalStateException();
+            cur = null;
+            for (; index < storage.length; index++) {
+                if (cur != null && cur != empty)
+                    break;
+                cur = storage[index];
+            }
+            step++;
+            return (T) cur;
+        }
+
+        //Трудоёмкость O(1)
+        //Ресурсоёмкость O(1)
+        @Override
+        public void remove() {
+            if (cur == null || cur == empty)
+                throw new IllegalStateException();
+            size--;
+            step--;
+            cur = null;
+            storage[index - 1] = empty;
+        }
     }
 }

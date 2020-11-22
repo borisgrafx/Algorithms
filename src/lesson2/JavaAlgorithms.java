@@ -170,7 +170,8 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
-    //Сложность алгоритма ~O(N^2)
+    //Трудоёмкость O(N * sqrt(N))
+    //Ресурсоёмкость O(N)
     static public int calcPrimesNumber(int limit) {
         if (limit <= 1)
             return 0;

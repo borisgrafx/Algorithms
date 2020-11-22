@@ -19,7 +19,8 @@ public class JavaDynamicTasks {
      * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
      * При сравнении подстрок, регистр символов *имеет* значение.
      */
-    //Сложность алгоритма ~O(MN), M и N - длина первой и второй строки
+    //Трудоёмкость O(MN), M и N - длина первой и второй строки
+    //Ресурсоёмкость O((M + 1) * (N + 1)) - кол-во элементов матрицы opt
     //Алгоритм из книги "Computer Science: An Interdisciplinary Approach" с использованием StringBuilder
     public static String longestCommonSubSequence(String first, String second) {
         int[][] opt = new int[first.length() + 1][second.length() + 1];
@@ -55,7 +56,8 @@ public class JavaDynamicTasks {
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
     //Исправленный алгоритм со stackoverflow.com
-    //Сложность алгоритма ~O(N)
+    //Трудоёмкость O(N^2 + N)
+    //Ресурсоёмкость ~O(N) - длина столбца матрицы data, кол-во столбцов = const
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
         int[][] data = new int[list.size()][2];
         List<Integer> ans = new ArrayList<>();

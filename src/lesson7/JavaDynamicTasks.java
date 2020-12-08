@@ -56,7 +56,7 @@ public class JavaDynamicTasks {
      * В примере ответами являются 2, 8, 9, 12 или 2, 5, 9, 12 -- выбираем первую из них.
      */
     //Исправленный алгоритм со stackoverflow.com
-    //Трудоёмкость O(N^2 + N)
+    //Трудоёмкость O(N^2)
     //Ресурсоёмкость ~O(N) - длина столбца матрицы data, кол-во столбцов = const
     public static List<Integer> longestIncreasingSubSequence(List<Integer> list) {
         int[][] data = new int[list.size()][2];

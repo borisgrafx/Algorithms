@@ -94,7 +94,7 @@ public class OpenAddressingSet<T> extends AbstractSet<T> {
      * <p>
      * Средняя
      */
-    //Трудоёмкость O(N)
+    //Трудоёмкость O(1 / (1 - A)), где A = n / N , n - число заполненных эл-тов, N - размерность массива
     //Ресурсоёмкость O(1)
     @Override
     public boolean remove(Object o) {

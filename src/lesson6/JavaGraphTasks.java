@@ -2,10 +2,7 @@ package lesson6;
 
 import kotlin.NotImplementedError;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaGraphTasks {
@@ -97,8 +94,8 @@ public class JavaGraphTasks {
      * <p>
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
-    //Трудоёмкость O(N)
-    //Ресурсоёмкость O(N)
+    //Трудоёмкость O(V)
+    //Ресурсоёмкость O(V)
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
         Set<Graph.Vertex> verts = graph.getVertices();
         for (Graph.Vertex vertex : graph.getVertices())
@@ -130,8 +127,27 @@ public class JavaGraphTasks {
      * <p>
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
+    //Трудоёмкость O(V)
+    //Ресурсоёмкость O(V)
     public static Path longestSimplePath(Graph graph) {
-        throw new NotImplementedError();
+        if (graph.getVertices().size() == 0)
+            return new Path();
+        Path max = new Path(graph.getVertices().iterator().next());
+        List<Path> paths = new ArrayList<>();
+        for (Graph.Vertex vertex : graph.getVertices()) {
+            paths.add(new Path(vertex));
+        }
+        while (paths.size() != 0) {
+            Path current = paths.get(0);
+            if (current.getLength() > max.getLength())
+                max = current;
+            for (Graph.Vertex neighbour : graph.getNeighbors(current.getVertices().get(current.getVertices().size() - 1))) {
+                if (!current.contains(neighbour))
+                    paths.add(new Path(current, graph, neighbour));
+            }
+            paths.remove(0);
+        }
+        return max;
     }
 
 

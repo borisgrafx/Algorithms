@@ -40,96 +40,90 @@ public class JavaTasks {
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    // Трудоёмкость ~O(N^2)
-    // Ресурсоёмкость ~O(1)
+    // Трудоёмкость O(N * logN)
+    // Ресурсоёмкость O(N)
     static public void sortTimes(String inputName, String outputName) throws Exception {
         File input = new File(inputName);
         Scanner scanner = new Scanner(input);
         List<String> times = new ArrayList<>();
-        while (scanner.hasNextLine())
+        while (scanner.hasNextLine()) {
             times.add(scanner.nextLine());
+        }
         if (times.size() < 1)
             throw new IllegalArgumentException();
         int[] digitalTimes = new int[times.size()];
-        int k = 0;
-        try {
-            for (String clock : times) {
-                int koef;
-                String[] digitAP = clock.split(" ");
-                switch (digitAP[1]) {
-                    case "PM":
-                        koef = 1;
-                        break;
-                    case "AM":
-                        koef = -1;
-                        break;
-                    default:
-                        throw new IllegalArgumentException();
-                }
-                String[] digitOnly = digitAP[0].split(":");
-                if (Integer.parseInt(digitOnly[0]) == 12)
-                    digitOnly[0] = "0";
-                else if (Integer.parseInt(digitOnly[0]) == 0)
-                    throw new IllegalArgumentException();
-                digitalTimes[k] = (Integer.parseInt(digitOnly[0]) * 3600 + Integer.parseInt(digitOnly[1]) * 60 + Integer.parseInt(digitOnly[2])) * koef;
-                if (Math.abs(digitalTimes[k]) >= 46800)
-                    throw new IllegalArgumentException();
-                k++;
-            }
-        } catch (NumberFormatException ex) {
-            throw new IllegalArgumentException();
-        }
-
-
         for (int i = 0; i < digitalTimes.length; i++) {
-            int min = digitalTimes[i];
-            int min_i = i;
-            for (int j = i + 1; j < digitalTimes.length; j++) {
-                if (digitalTimes[j] < min) {
-                    min = digitalTimes[j];
-                    min_i = j;
-                }
-            }
-            if (i != min_i) {
-                int tmp = digitalTimes[i];
-                String tmp2 = times.get(i);
-                digitalTimes[i] = digitalTimes[min_i];
-                times.set(i, times.get(min_i));
-                digitalTimes[min_i] = tmp;
-                times.set(min_i, tmp2);
-            }
+            digitalTimes[i] = datesToInt(times.get(i));
         }
 
+        Sorts.quickSort(digitalTimes);
 
-        for (int i = 0; i < digitalTimes.length; i++) {
-            if (digitalTimes[i] < 0) {
-                int max = digitalTimes[i];
-                int max_i = i;
-                for (int j = i + 1; j < digitalTimes.length; j++) {
-                    if (digitalTimes[j] > max && digitalTimes[j] < 0) {
-                        max = digitalTimes[j];
-                        max_i = j;
-                    }
-                }
-                if (i != max_i) {
-                    int tmp = digitalTimes[i];
-                    String tmp2 = times.get(i);
-                    digitalTimes[i] = digitalTimes[max_i];
-                    times.set(i, times.get(max_i));
-                    digitalTimes[max_i] = tmp;
-                    times.set(max_i, tmp2);
-                }
-            } else
-                break;
-        }
-
-        //System.out.println(times);
         PrintWriter pw = new PrintWriter(outputName);
-        for (String sortedTime : times) {
-            pw.println(sortedTime);
+        for (int digitalTime : digitalTimes) {
+/*          System.out.println(digitalTime);
+            System.out.println(datesToString(digitalTime));*/
+            pw.println(datesToString(digitalTime));
         }
         pw.close();
         scanner.close();
+    }
+
+    static private int datesToInt(String date) {
+        int digitalDate;
+        try {
+            int koef;
+            String[] digitAP = date.split(" ");
+            switch (digitAP[1]) {
+                case "PM":
+                    koef = 43200;
+                    break;
+                case "AM":
+                    koef = 0;
+                    break;
+                default:
+                    throw new IllegalArgumentException();
+            }
+            String[] digitOnly = digitAP[0].split(":");
+            if (Integer.parseInt(digitOnly[0]) == 12)
+                digitOnly[0] = "0";
+            else if (Integer.parseInt(digitOnly[0]) == 0 || Integer.parseInt(digitOnly[0]) > 12)
+                throw new IllegalArgumentException();
+            digitalDate = (Integer.parseInt(digitOnly[0]) * 3600 + Integer.parseInt(digitOnly[1]) * 60
+                    + Integer.parseInt(digitOnly[2])) + koef;
+            if (Integer.parseInt(digitOnly[1]) > 60 || Integer.parseInt(digitOnly[2]) > 60)
+                throw new IllegalArgumentException();
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException();
+        }
+        return digitalDate;
+    }
+
+    static private String datesToString(int date) {
+        String AP;
+        if (date < 43200)
+            AP = "AM";
+        else {
+            AP = "PM";
+            date -= 43200;
+        }
+        String hours = "";
+        if (date / 3600 < 10)
+            hours = "0";
+        if (date / 3600 != 0)
+            hours += Integer.toString(date / 3600);
+        else
+            hours = "12";
+        date %= 3600;
+        String minutes = "";
+        if (date / 60 < 10)
+            minutes = "0";
+        minutes += Integer.toString(date / 60);
+        date %= 60;
+        String seconds = "";
+        if (date < 10)
+            seconds = "0";
+        seconds += Integer.toString(date);
+        return hours + ":" + minutes + ":" + seconds + " " + AP;
     }
 
     /**
@@ -193,7 +187,7 @@ public class JavaTasks {
      * 121.3
      */
     static public void sortTemperatures(String inputName, String outputName) throws Exception {
-        // Трудоёмкость O(N * logN + 3N) - Средняя т/ёмкость quickSort + считывание списка из файла + 2 цикла по элементам списка
+        // Трудоёмкость O(N * logN)
         // Ресурсоёмкость O(N)
         File input = new File(inputName);
         Scanner scanner = new Scanner(input);

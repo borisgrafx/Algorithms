@@ -44,7 +44,7 @@ abstract class AbstractOpenAddressingSetTest {
         for (iteration in 1..100) {
             val bitsNumber = random.nextInt(4) + 6
             val openAddressingSet = create<Int>(bitsNumber)
-            for (i in 1..32) {
+            for (i in 1..50) {
                 val firstInt = random.nextInt(32)
                 val secondInt = firstInt + (1 shl bitsNumber)
                 openAddressingSet += secondInt
@@ -76,6 +76,11 @@ abstract class AbstractOpenAddressingSetTest {
                 )
             }
         }
+        val openAddressingSet = create<Int>(6)
+        assertFalse(
+            openAddressingSet.remove(11),
+            "What? How come I remove an unexisting element???"
+        )
     }
 
     protected fun doIteratorTest() {

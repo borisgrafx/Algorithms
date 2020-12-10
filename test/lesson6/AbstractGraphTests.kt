@@ -289,6 +289,20 @@ abstract class AbstractGraphTests {
         val emptyGraph = GraphBuilder().build()
         assertEquals(0, emptyGraph.longestSimplePath().length)
 
+        val oneVertGraph = GraphBuilder().apply {
+            addVertex("A")
+        }.build()
+        val longestOneVertPath = oneVertGraph.longestSimplePath()
+        assertEquals(0, longestOneVertPath.length)
+
+        val twoVertGraph = GraphBuilder().apply {
+            val a = addVertex("A")
+            val b = addVertex("B")
+            addConnection(a, b)
+        }.build()
+        val longestTwoVertPath = twoVertGraph.longestSimplePath()
+        assertEquals(1, longestTwoVertPath.length)
+
         val noEdgeGraph = GraphBuilder().apply {
             addVertex("A")
             addVertex("B")
